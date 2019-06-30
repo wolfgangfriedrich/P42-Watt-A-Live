@@ -162,7 +162,7 @@ unsigned long CurrentTime = millis();
 		Serial.println(F(" mV"));
 
 		Serial.print(F(" Power Register          : "));
-		Serial.print(ina209_40.readWord( POWER_REG ) *0.004 );
+		Serial.print(ina209_40.readWord( POWER_REG ) *0.002 );
 		Serial.println(F(" W"));
 
 		Serial.print(F(" Shunt Voltage Max Value : "));
@@ -191,7 +191,7 @@ unsigned long CurrentTime = millis();
 		Serial.println(F(" mV"));
 
 		Serial.print(F(" Power Max Value         : "));
-		Serial.print(ina209_40.readWord( POWER_PEAK_REG ) *4 );
+		Serial.print(ina209_40.readWord( POWER_PEAK_REG ) *2 );
 		Serial.println(F(" mW"));
 		Serial.println("");
 		

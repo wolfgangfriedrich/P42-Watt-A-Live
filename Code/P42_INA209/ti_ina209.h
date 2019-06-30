@@ -19,19 +19,19 @@
  
  // Hardware
  // Arduino Uno
-# define WARN_PIN  13
-# define ALERT_PIN 12
-# define GPIO_PIN  11
-# define CONV_PIN  10
-# define OVER_PIN   2
-# define CRIT_PIN   3
+//# define WARN_PIN  13
+//# define ALERT_PIN 12
+//# define GPIO_PIN  11
+//# define CONV_PIN  10
+//# define OVER_PIN   2
+//# define CRIT_PIN   3
  // Feather
-//# define WARN_PIN  15
-//# define ALERT_PIN 14
-//# define GPIO_PIN  16
-//# define CONV_PIN  12
-//# define OVER_PIN   1
-//# define CRIT_PIN   0
+# define WARN_PIN  15
+# define ALERT_PIN 14
+# define GPIO_PIN  16
+# define CONV_PIN  12
+# define OVER_PIN   1
+# define CRIT_PIN   0
 
 
 						// Register Name		Function										power on reset bin	hex		type
