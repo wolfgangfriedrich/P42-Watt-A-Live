@@ -8,7 +8,7 @@
 // Last change: 2019/Jun/29
 
 // https://www.tindie.com/stores/pier42/
-// https://hackaday.io/project/
+// https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
 // https://github.com/wolfgangfriedrich/P42-Watt-A-Live
 
 

@@ -5,10 +5,10 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Jun/29
+// Last change: 2019/Jun/30
 
 // https://www.tindie.com/stores/pier42/
-// https://hackaday.io/project/
+// https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
 // https://github.com/wolfgangfriedrich/P42-Watt-A-Live
 
 #ifndef TI_INA209_H
@@ -17,7 +17,7 @@
 #include <Arduino.h>
 #include <Wire.h> 		
  
- // Hardware
+ // Hardware - Select one of the 2 options !!!
  // Arduino Uno
 //# define WARN_PIN  13
 //# define ALERT_PIN 12
@@ -25,6 +25,7 @@
 //# define CONV_PIN  10
 //# define OVER_PIN   2
 //# define CRIT_PIN   3
+
  // Feather
 # define WARN_PIN  15
 # define ALERT_PIN 14
@@ -221,6 +222,7 @@ class TI_INA209
 {
 int ina209_addr;
 int reg_addr;
+float shunt_f;
 
 //private: 
 //	word readWord();
@@ -228,11 +230,15 @@ int reg_addr;
 
 public:
 	TI_INA209(byte address);
+//	TI_INA209(byte address, float shunt);
 	word	readWord (byte reg_addr );
 	void	writeWord (byte reg_addr , word data);
 	void	pinMode209 ( uint8_t mode);
 	void	digitalWrite209 ( uint8_t value );
 	uint8_t	digitalRead209 ( void );
+//	word	getCurrent ( float shunt_f );
+//	word	getVoltage ( void );
+//	word	getPower ( float shunt_f );
 		
 };
 

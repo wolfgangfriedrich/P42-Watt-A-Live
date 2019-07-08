@@ -5,10 +5,10 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Jun/29
+// Last change: 2019/Jul/07
 
 // https://www.tindie.com/stores/pier42/
-// https://hackaday.io/project/
+// https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
 // https://github.com/wolfgangfriedrich/P42-Watt-A-Live
 
 
@@ -19,8 +19,9 @@
 TI_INA209 ina209_40(0x40);		// instantiate ina209_40 of class INA209 with I2C address 0x40. Address depends on set resistors 
 
 unsigned long ActionTime = 10000;
-word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | SMAEN | OLEN | CREN | WRNEN;			// Set all bits for the warning flag 
-//word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | WRNEN;			// Warning 		
+//word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN ;										// Set no bits for the warning flag 
+//word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | SMAEN | OLEN | CREN | WRNEN;		// Set all bits for the warning flag 
+word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | WRNEN;			// Warning 		
 //word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | OLEN;			// Overlimit only
 //word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | CREN;			// Critical only 
 //word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | SMAEN;			// SMBus Alert only 
@@ -112,7 +113,7 @@ void loop() {
 const long INTERVAL1000MSEC = 1000;
 const long INTERVAL10SEC = 10000;
 byte incomingByte = 0;
-word value = 0;
+uint16_t value = 0;
 
 unsigned long CurrentTime = millis();
 
@@ -141,26 +142,33 @@ unsigned long CurrentTime = millis();
 			ina209_40.digitalWrite209 ( LOW );
 		}
 
-//Serial.print(F(" Critical DAC+ Register : 0x"));
-//Serial.println(ina209_40.readWord( CRIT_DACP_REG ),HEX );
-		
-
 		Serial.println("");
 		Serial.print(F(" Bus Voltage Register    : "));
 		Serial.print( (ina209_40.readWord( BUS_V_REG ) >>3) *0.004 );
 		Serial.println(F(" V"));
-//		Serial.print(F(" 0x"));
-//		Serial.print(ina209_40.readWord( BUS_V_REG ),HEX );
-//		Serial.println(".");
 
 		Serial.print(F(" Current Register        : "));
-		Serial.print(ina209_40.readWord( CURRENT_REG ) *0.1 );
+		value = ina209_40.readWord (CURRENT_REG );
+		if ((value & 0x8000) == 0x0000) {
+			Serial.print( ( value ) *0.1 );
+		}
+		else {
+			Serial.print( "-");
+			Serial.print( ( (value ^ 0xffff) +1  ) *0.1 );
+		}
 		Serial.println(F(" mA"));
 
 		Serial.print(F(" Shunt Voltage Register  : "));
-		Serial.print(ina209_40.readWord( SHUNT_V_REG ) *0.01);
+		value = ina209_40.readWord (SHUNT_V_REG );
+		if ((value & 0x8000) == 0x0000) {
+			Serial.print( ( value ) *0.01 );
+		}
+		else {
+			Serial.print( "-");
+			Serial.print( ( (value ^ 0xffff) +1  ) *0.01 );
+		}
 		Serial.println(F(" mV"));
-
+			
 		Serial.print(F(" Power Register          : "));
 		Serial.print(ina209_40.readWord( POWER_REG ) *0.002 );
 		Serial.println(F(" W"));
@@ -169,17 +177,16 @@ unsigned long CurrentTime = millis();
 		Serial.print( (ina209_40.readWord (SHUNT_V_POSPEAK_REG ) ) *0.01 );
 		Serial.println(F(" mV"));
 
+		Serial.print(F(" Shunt Voltage Min Value : "));
 		value = ina209_40.readWord (SHUNT_V_NEGPEAK_REG );
 		if ((value & 0x8000) == 0x0000) {
-			Serial.print(F(" Shunt Voltage Min Value : "));
 			Serial.print( ( value ) *0.01 );
-			Serial.println(F(" mV"));
 		}
 		else {
-			Serial.print(F(" Shunt Voltage Min Value : -"));
+			Serial.print( "-" );
 			Serial.print( ( (value ^ 0xffff) +1  ) *0.01 );
-			Serial.println(F(" mV"));
 		}
+			Serial.println(F(" mV"));
 			
 
 		Serial.print(F(" Bus Voltage Max Value   : "));
