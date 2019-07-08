@@ -21,3 +21,13 @@ $RECYCLE.BIN/
 # =========================
 # Operating System Files
 # =========================
+
+# =========================
+# Project Files
+# =========================
+
+Order/*
+Datasheets/*
+Code/INA209/*
+*-bak
+Design/*.tmp
