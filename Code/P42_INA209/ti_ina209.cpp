@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Jun/29
+// Last change: 2019/Jul/21
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
@@ -19,13 +19,14 @@
 
 
 //<<constructor>> 
-TI_INA209::TI_INA209(byte address){
-	ina209_addr = address;	
+TI_INA209::TI_INA209(byte address, float shunt) {
+	ina209_addr = address;
+	shunt_f = shunt;
 	
-	pinMode (WARN_PIN, INPUT);
+	pinMode (WARN_PIN,  INPUT);
 	pinMode (ALERT_PIN, INPUT);
-	pinMode (OVER_PIN, INPUT);
-	pinMode (CRIT_PIN, INPUT);
+	pinMode (OVER_PIN,  INPUT);
+	pinMode (CRIT_PIN,  INPUT);
 
 }
 
@@ -97,4 +98,59 @@ uint8_t  TI_INA209::digitalRead209 ( void ) {
 		return HIGH;
 	}
 }
+
+// return current value in human readable form
+float	TI_INA209::getCurrent ( float shunt_f ) {
+
+	uint16_t value;
+	float return_value;
+	
+		value = readWord (CURRENT_REG );
+		if ((value & 0x8000) == 0x0000) {
+			return_value = value *shunt_f ;
+		}
+		else {
+			return_value =  -( (value ^ 0xffff) +1  ) *shunt_f ;
+		}
+
+//		Serial.print(F(" Current Register        : "));
+//		Serial.print( return_value );
+//		Serial.print( "-");
+//		Serial.println(F(" mA"));
+
+	return return_value;
+}
+
+// return voltage value in human readable form
+	float	TI_INA209::getVoltage ( void ) {
+
+	float return_value;
+
+		return_value = ( (readWord( BUS_V_REG ) >>3) *0.004 );
+
+//		Serial.print(F(" Bus Voltage Register    : "));
+//		Serial.print(return_value);
+//		Serial.println(F(" V"));
+
+	return return_value;
+}
+
+// return power value in human readable form
+	float	TI_INA209::getPower ( float shunt_f ){
+
+	float return_value;
+
+		return_value = readWord( POWER_REG ) *0.02 * shunt_f;
+
+//		Serial.print(F(" Power Register          : "));
+//		Serial.print( return_value );
+//		Serial.println(F(" W"));
+
+	return return_value;
+}
+
+
+
+
+
 

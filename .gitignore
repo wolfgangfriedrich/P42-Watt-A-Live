@@ -30,4 +30,4 @@ Order/*
 Datasheets/*
 Code/INA209/*
 *-bak
-Design/*.tmp
+Design/*/*.tmp

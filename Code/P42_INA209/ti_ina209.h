@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Jun/30
+// Last change: 2019/Jul/12
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
@@ -17,22 +17,31 @@
 #include <Arduino.h>
 #include <Wire.h> 		
  
- // Hardware - Select one of the 2 options !!!
- // Arduino Uno
-//# define WARN_PIN  13
-//# define ALERT_PIN 12
-//# define GPIO_PIN  11
-//# define CONV_PIN  10
-//# define OVER_PIN   2
-//# define CRIT_PIN   3
+// *** Select Platform here ***
+#define ArduinoShield
+//#define FeatherWing		// use FeatherWing for Breadboard
+ 
+#define SHUNT_R		0.1 
+ 
+#ifdef ArduinoShield
+  // Arduino Uno
+ #define WARN_PIN  13
+ #define ALERT_PIN 12
+ #define GPIO_PIN  11
+ #define CONV_PIN  10
+ #define OVER_PIN   2
+ #define CRIT_PIN   3
+#endif
 
- // Feather
-# define WARN_PIN  15
-# define ALERT_PIN 14
-# define GPIO_PIN  16
-# define CONV_PIN  12
-# define OVER_PIN   1
-# define CRIT_PIN   0
+#ifdef FeatherWing
+  // Feather
+ #define WARN_PIN  15
+ #define ALERT_PIN 14
+ #define GPIO_PIN  16
+ #define CONV_PIN  12
+ #define OVER_PIN   1
+ #define CRIT_PIN   0
+#endif
 
 
 						// Register Name		Function										power on reset bin	hex		type
@@ -229,16 +238,16 @@ float shunt_f;
 //	void writeWord(byte reg_addr , word data);
 
 public:
-	TI_INA209(byte address);
-//	TI_INA209(byte address, float shunt);
+//	TI_INA209(byte address);
+	TI_INA209(byte address, float shunt);
 	word	readWord (byte reg_addr );
 	void	writeWord (byte reg_addr , word data);
 	void	pinMode209 ( uint8_t mode);
 	void	digitalWrite209 ( uint8_t value );
 	uint8_t	digitalRead209 ( void );
-//	word	getCurrent ( float shunt_f );
-//	word	getVoltage ( void );
-//	word	getPower ( float shunt_f );
+	float	getCurrent ( float shunt_f );
+	float	getVoltage ( void );
+	float	getPower ( float shunt_f );
 		
 };
 
