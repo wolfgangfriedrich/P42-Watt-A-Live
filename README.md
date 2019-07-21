@@ -7,12 +7,21 @@ The board is populated with a 0.10 Ohm shunt to measure 3.2A to 100µA. Optional
 
 Full feature set:
 •	Adafruit Feather Wing and Arduino Uno Shield connector option
+
 •	Current monitor with 2 different ranges for high current and sleep mode measurements 
+
 •	Positive and negative current flow
+
 •	Bus voltage monitor with 2 dedicated GND terminals
+
 •	Communication interface: I2C up to 3.4MHz
+
 •	16 I2C addresses selectable through resistor options
+
 •	6 dedicated signaling pins (SMBus Alert, Warning, Overlimit, Critical, Convert and 1 GPIO)
+
 •	Operating supply voltage 3.0V to 5.5V
+
 •	Optional 4mm Banana plugs for bypass 
+
 •	Size: 71mm x 54mm (2.8" x 2.1")
