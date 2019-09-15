@@ -1,0 +1,9 @@
+TI_INA209	KEYWORD1
+readWord	KEYWORD2
+writeWord	KEYWORD2
+pinMode209	KEYWORD2
+digitalWrite209	KEYWORD2
+digitalRead209	KEYWORD2
+getCurrent	KEYWORD2
+getVoltage	KEYWORD2
+getPower	KEYWORD2
