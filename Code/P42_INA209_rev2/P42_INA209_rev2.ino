@@ -149,9 +149,9 @@ unsigned long CurrentTime = millis();
 		Serial.print( (ina209_40.readWord( BUS_V_REG ) >>3) *0.004 );
 		Serial.println(F(" V"));
 
-	Serial.print(F("^^^ Bus Voltage Register : "));
-	Serial.print( ina209_40.getVoltage() );
-	Serial.println(F(" V"));
+		Serial.print(F("^^^ Bus Voltage Register : "));
+		Serial.print( ina209_40.getVoltage() );
+		Serial.println(F(" V"));
 
 		Serial.print(F(" Current Register        : "));
 		value = ina209_40.readWord (CURRENT_REG );
@@ -165,10 +165,13 @@ unsigned long CurrentTime = millis();
 		}
 		Serial.println(F(" mA"));
 
-	Serial.print(F("^^^ Current Register     : "));
-	Serial.print( ina209_40.getCurrent( SHUNT_R ) );
-	Serial.println(F(" mA"));
-
+		Serial.print(F("^^^ Current Register     : "));
+		Serial.print( ina209_40.getCurrent( SHUNT_R ) );
+		if (SHUNT_R == 0.05)
+			Serial.println(F(" mA"));
+		else
+			Serial.println(F(" uA"));
+	
 		Serial.print(F(" Shunt Voltage Register  : "));
 		value = ina209_40.readWord (SHUNT_V_REG );
 		if ((value & 0x8000) == 0x0000) {
@@ -179,15 +182,18 @@ unsigned long CurrentTime = millis();
 			Serial.print( ( (value ^ 0xffff) +1  ) * 0.01 );
 		}
 		Serial.println(F(" mV"));
-			
+				
 		Serial.print(F(" Power Register          : "));
 		Serial.print(ina209_40.readWord( POWER_REG ) * 0.0002 / SHUNT_R );
 		Serial.println(F(" W"));
-
-	Serial.print(F("^^^ Power Register       : "));
-	Serial.print(ina209_40.getPower( SHUNT_R ) );
-	Serial.println(F(" W"));
-
+	
+		Serial.print(F("^^^ Power Register       : "));
+		Serial.print(ina209_40.getPower( SHUNT_R ) );
+		if (SHUNT_R == 0.05)
+			Serial.println(F(" W"));
+		else
+			Serial.println(F(" mW"));
+	
 		Serial.print(F(" Shunt Voltage Max Value : "));
 		Serial.print( (ina209_40.readWord (SHUNT_V_POSPEAK_REG ) ) *0.01 );
 		Serial.println(F(" mV"));
@@ -243,7 +249,7 @@ unsigned long CurrentTime = millis();
 				Serial.println (F(" !Warning positive Shunt Voltage"));
 			}
 			else if ( smbus_alert & WSN) {				// Warning shunt negative
-				Serial.println (F(" !Warning negative Shunt Voltage"));
+//				Serial.println (F(" !Warning negative Shunt Voltage"));
 			} 
 			else if ( smbus_alert & OLOV) {				// Overlimit over voltage
 				Serial.println (F(" !!Limit Over Voltage"));
@@ -319,18 +325,18 @@ unsigned long CurrentTime = millis();
 		over_pin_status = 0;
 
 	// Critical pin
-	if (digitalRead (CRIT_PIN) && (critical_pin_status == 0)) {
-		critical_pin_status = 1;
-		Serial.println (F(" >>>Critical pin clear"));
-	}
-	else if (digitalRead (CRIT_PIN))
-		critical_pin_status = 1;
-	else if (!digitalRead (CRIT_PIN) && (critical_pin_status == 1)) {
-		critical_pin_status = 0;
-		Serial.println (F(" >>>Critical pin set"));		
-	}
-	else
-		critical_pin_status = 0;
+//	if (digitalRead (CRIT_PIN) && (critical_pin_status == 0)) {
+//		critical_pin_status = 1;
+//		Serial.println (F(" >>>Critical pin clear"));
+//	}
+//	else if (digitalRead (CRIT_PIN))
+//		critical_pin_status = 1;
+//	else if (!digitalRead (CRIT_PIN) && (critical_pin_status == 1)) {
+//		critical_pin_status = 0;
+//		Serial.println (F(" >>>Critical pin set"));		
+//	}
+//	else
+//		critical_pin_status = 0;
 
 
 	// GPIO pin

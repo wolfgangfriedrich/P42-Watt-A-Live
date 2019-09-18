@@ -18,10 +18,11 @@
 #include <Wire.h> 		
  
 // *** Select Platform here ***
-#define ArduinoShield
-//#define FeatherWing		// use FeatherWing for Breadboard
+//#define ArduinoShield
+#define FeatherWing		// use FeatherWing for Breadboard
  
-#define SHUNT_R		0.05 
+//#define SHUNT_R		0.05 
+#define SHUNT_R		499 
  
 #ifdef ArduinoShield
   // Arduino Uno

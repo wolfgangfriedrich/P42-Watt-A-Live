@@ -107,10 +107,16 @@ float	TI_INA209::getCurrent ( float shunt_f ) {
 	
 		value = readWord (CURRENT_REG );
 		if ((value & 0x8000) == 0x0000) {
-			return_value = value * 0.01 / shunt_f  ;
+			if (shunt_f == 499)
+				return_value = value * 1000 * 0.01 / shunt_f   ;
+			else
+				return_value = value * 0.01 / shunt_f  ;
 		}
 		else {
-			return_value =  -( (value ^ 0xffff) +1  ) * 0.01 / shunt_f  ;
+			if (shunt_f == 499)
+				return_value =  -( (value ^ 0xffff) +1  ) * 1000 * 0.01 / shunt_f  ;
+			else
+				return_value =  -( (value ^ 0xffff) +1  ) * 0.01 / shunt_f  ;
 		}
 
 //		Serial.print(F(" Current Register        : "));
@@ -140,7 +146,10 @@ float	TI_INA209::getCurrent ( float shunt_f ) {
 
 	float return_value;
 
-		return_value = readWord( POWER_REG ) * 0.0002 / shunt_f;
+		if (shunt_f == 499)
+			return_value = readWord( POWER_REG ) * 1000 * 0.0002 / shunt_f;
+		else
+			return_value = readWord( POWER_REG ) * 0.0002 / shunt_f;
 
 //		Serial.print(F(" Power Register          : "));
 //		Serial.print( return_value );
