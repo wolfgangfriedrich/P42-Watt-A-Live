@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Sept/15
+// Last change: 2019/Oct/06
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
@@ -107,14 +107,14 @@ float	TI_INA209::getCurrent ( float shunt_f ) {
 	
 		value = readWord (CURRENT_REG );
 		if ((value & 0x8000) == 0x0000) {
-			if (shunt_f == 499)
-				return_value = value * 1000 * 0.01 / shunt_f   ;
+			if (shunt_f > 1)
+				return_value = value * 0.01 / shunt_f * 1000 ;
 			else
 				return_value = value * 0.01 / shunt_f  ;
 		}
 		else {
-			if (shunt_f == 499)
-				return_value =  -( (value ^ 0xffff) +1  ) * 1000 * 0.01 / shunt_f  ;
+			if (shunt_f > 1)
+				return_value =  -( (value ^ 0xffff) +1  ) * 0.01 / shunt_f * 1000 ;
 			else
 				return_value =  -( (value ^ 0xffff) +1  ) * 0.01 / shunt_f  ;
 		}
@@ -146,8 +146,8 @@ float	TI_INA209::getCurrent ( float shunt_f ) {
 
 	float return_value;
 
-		if (shunt_f == 499)
-			return_value = readWord( POWER_REG ) * 1000 * 0.0002 / shunt_f;
+		if (shunt_f > 1)
+			return_value = readWord( POWER_REG ) * 0.0002 / shunt_f * 1000;
 		else
 			return_value = readWord( POWER_REG ) * 0.0002 / shunt_f;
 

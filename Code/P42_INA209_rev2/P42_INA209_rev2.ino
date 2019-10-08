@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Sept/15
+// Last change: 2019/Oct/06
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
@@ -15,6 +15,9 @@
 #include <Wire.h>		// I2C library 
 //#include <Serial.h>		// UART library 
 #include "TI_INA209.h"
+//#include <SoftwareSerial.h>
+
+//SoftwareSerial mySerial(4, 5); // RX, TX
 
 TI_INA209 ina209_40( 0x40, SHUNT_R );		// instantiate ina209_40 of class INA209 with I2C address 0x40. Address depends on set resistors.
 										// Set shunt resistor value.
@@ -44,6 +47,9 @@ word testword = 0;
 	
 	Wire.begin();
 	Serial.begin(115200);
+	
+//	mySerial.begin(38400);
+//	mySerial.println("Hello, world?");
 	
 	delay(5000);
 	
@@ -80,6 +86,16 @@ word testword = 0;
 	ina209_40.writeWord ( SMBUS_REG , smbus_mask );
 
 	Serial.println(F(" TI INA209 Demo\r\n"));
+	Serial.print(F(" Shunt value [Ohm] : "));
+	Serial.println(SHUNT_R );
+//	mySerial.println(F(" TI INA209 Demo\r\n"));
+//	mySerial.print(F(" Shunt value [Ohm] : "));
+//	mySerial.println(SHUNT_R );
+	
+	Serial.print(F(" Shunt value [Ohm] : "));
+	Serial.println(SHUNT_R );
+	
+	
 	Serial.print(F(" Configuration Register : 0x"));
 	Serial.println(ina209_40.readWord( CONFIG_REG ),HEX );
 	delay(100);
@@ -125,8 +141,8 @@ unsigned long CurrentTime = millis();
 
 	CurrentTime = millis();
 
-//	if ( ( (CurrentTime - ActionTime) >= INTERVAL10SEC) || (Serial.available() != 0) )
-	if ( (  Serial.available() != 0) )
+	if ( ( (CurrentTime - ActionTime) >= INTERVAL10SEC) || (Serial.available() != 0) )
+//	if ( (  Serial.available() != 0) )
 
 	{
 
@@ -152,6 +168,9 @@ unsigned long CurrentTime = millis();
 		Serial.print(F("^^^ Bus Voltage Register : "));
 		Serial.print( ina209_40.getVoltage() );
 		Serial.println(F(" V"));
+//		mySerial.print(F("^^^ Bus Voltage Register : "));
+//		mySerial.print( ina209_40.getVoltage() );
+//		mySerial.println(F(" V"));
 
 		Serial.print(F(" Current Register        : "));
 		value = ina209_40.readWord (CURRENT_REG );
@@ -167,10 +186,14 @@ unsigned long CurrentTime = millis();
 
 		Serial.print(F("^^^ Current Register     : "));
 		Serial.print( ina209_40.getCurrent( SHUNT_R ) );
+		//mySerial.print(F("^^^ Current Register     : "));
+		//mySerial.print( ina209_40.getCurrent( SHUNT_R ) );
 		if (SHUNT_R == 0.05)
 			Serial.println(F(" mA"));
+//			mySerial.println(F(" mA"));
 		else
 			Serial.println(F(" uA"));
+//			mySerial.println(F(" uA"));
 	
 		Serial.print(F(" Shunt Voltage Register  : "));
 		value = ina209_40.readWord (SHUNT_V_REG );
@@ -189,10 +212,14 @@ unsigned long CurrentTime = millis();
 	
 		Serial.print(F("^^^ Power Register       : "));
 		Serial.print(ina209_40.getPower( SHUNT_R ) );
+//		mySerial.print(F("^^^ Power Register       : "));
+//		mySerial.print(ina209_40.getPower( SHUNT_R ) );
 		if (SHUNT_R == 0.05)
 			Serial.println(F(" W"));
+//			mySerial.println(F(" W"));
 		else
 			Serial.println(F(" mW"));
+//			mySerial.println(F(" mW"));
 	
 		Serial.print(F(" Shunt Voltage Max Value : "));
 		Serial.print( (ina209_40.readWord (SHUNT_V_POSPEAK_REG ) ) *0.01 );

@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Sept/15
+// Last change: 2019/Oct/06
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
@@ -18,9 +18,13 @@
 #include <Wire.h> 		
  
 // *** Select Platform here ***
-//#define ArduinoShield
-#define FeatherWing		// use FeatherWing for Breadboard
+#define ArduinoShield
+//#define FeatherWing		// use FeatherWing for Breadboard
  
+// SHUNT for Rev 1.0 board
+//#define SHUNT_R		0.10 
+//#define SHUNT_R		500 
+// SHUNT for Rev 2.x board
 //#define SHUNT_R		0.05 
 #define SHUNT_R		499 
  
