@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Oct/06
+// Last change: 2019/Oct/10
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
@@ -23,10 +23,13 @@
  
 // SHUNT for Rev 1.0 board
 //#define SHUNT_R		0.10 
-//#define SHUNT_R		500 
+//#define SHUNT_R		5.05
 // SHUNT for Rev 2.x board
 //#define SHUNT_R		0.05 
-#define SHUNT_R		499 
+#define SHUNT_R		1.05 
+
+#define CALIB_VALUE		4096		// from calculation in datasheet
+
  
 #ifdef ArduinoShield
   // Arduino Uno
@@ -229,7 +232,6 @@
 #define MODE_SBV_CONT	0x0007		// Shunt and Bus, Continuous
 
 
-#define CALIB_VALUE		4096		// from calculation in datasheet
 
 
 class TI_INA209
@@ -251,7 +253,7 @@ public:
 	void	digitalWrite209 ( uint8_t value );
 	uint8_t	digitalRead209 ( void );
 	float	getCurrent ( float shunt_f );
-	float	getVoltage ( void );
+	uint16_t	getVoltage ( void );
 	float	getPower ( float shunt_f );
 		
 };

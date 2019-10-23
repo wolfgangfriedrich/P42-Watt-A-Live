@@ -107,14 +107,14 @@ float	TI_INA209::getCurrent ( float shunt_f ) {
 	
 		value = readWord (CURRENT_REG );
 		if ((value & 0x8000) == 0x0000) {
-			if (shunt_f > 1)
-				return_value = value * 0.01 / shunt_f * 1000 ;
+			if (shunt_f >= 1)
+				return_value = value  * 0.01 / shunt_f * 1000;
 			else
 				return_value = value * 0.01 / shunt_f  ;
 		}
 		else {
-			if (shunt_f > 1)
-				return_value =  -( (value ^ 0xffff) +1  ) * 0.01 / shunt_f * 1000 ;
+			if (shunt_f >= 1)
+				return_value =  -( (value ^ 0xffff) +1  ) * 0.01 / shunt_f * 1000;
 			else
 				return_value =  -( (value ^ 0xffff) +1  ) * 0.01 / shunt_f  ;
 		}
@@ -128,11 +128,11 @@ float	TI_INA209::getCurrent ( float shunt_f ) {
 }
 
 // return voltage value in human readable form
-	float	TI_INA209::getVoltage ( void ) {
+	uint16_t	TI_INA209::getVoltage ( void ) {
 
-	float return_value;
+	uint16_t return_value;
 
-		return_value = ( (readWord( BUS_V_REG ) >>3) *0.004 );
+		return_value = ( (readWord( BUS_V_REG ) >>3) *4 );
 
 //		Serial.print(F(" Bus Voltage Register    : "));
 //		Serial.print(return_value);
@@ -146,7 +146,7 @@ float	TI_INA209::getCurrent ( float shunt_f ) {
 
 	float return_value;
 
-		if (shunt_f > 1)
+		if (shunt_f >= 1)
 			return_value = readWord( POWER_REG ) * 0.0002 / shunt_f * 1000;
 		else
 			return_value = readWord( POWER_REG ) * 0.0002 / shunt_f;

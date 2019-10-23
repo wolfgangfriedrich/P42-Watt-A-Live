@@ -15,16 +15,16 @@
 #include <Wire.h>		// I2C library 
 //#include <Serial.h>		// UART library 
 #include "TI_INA209.h"
-//#include <SoftwareSerial.h>
+#include <SoftwareSerial.h>
 
-//SoftwareSerial mySerial(4, 5); // RX, TX
+SoftwareSerial mySerial(4, 5); // RX, TX
 
 TI_INA209 ina209_40( 0x40, SHUNT_R );		// instantiate ina209_40 of class INA209 with I2C address 0x40. Address depends on set resistors.
 										// Set shunt resistor value.
 
 unsigned long ActionTime = 10000;
-//word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN ;										// Set no bits for the warning flag 
-word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | SMAEN | OLEN | CREN | WRNEN;		// Set all bits for the warning flag 
+word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN ;										// Set no bits for the warning flag 
+//word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | SMAEN | OLEN | CREN | WRNEN;		// Set all bits for the warning flag 
 //word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | WRNEN;			// Warning 		
 //word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | OLEN;			// Overlimit only
 //word smbus_mask = MWOV | MWUV | MWP | MWSP | MWSN | MCRITP | MCRITN | CREN;			// Critical only 
@@ -48,8 +48,8 @@ word testword = 0;
 	Wire.begin();
 	Serial.begin(115200);
 	
-//	mySerial.begin(38400);
-//	mySerial.println("Hello, world?");
+	mySerial.begin(38400);
+	mySerial.println("Hello, world?");
 	
 	delay(5000);
 	
@@ -88,9 +88,9 @@ word testword = 0;
 	Serial.println(F(" TI INA209 Demo\r\n"));
 	Serial.print(F(" Shunt value [Ohm] : "));
 	Serial.println(SHUNT_R );
-//	mySerial.println(F(" TI INA209 Demo\r\n"));
-//	mySerial.print(F(" Shunt value [Ohm] : "));
-//	mySerial.println(SHUNT_R );
+	mySerial.println(F(" TI INA209 Demo\r\n"));
+	mySerial.print(F(" Shunt value [Ohm] : "));
+	mySerial.println(SHUNT_R );
 	
 	Serial.print(F(" Shunt value [Ohm] : "));
 	Serial.println(SHUNT_R );
@@ -129,8 +129,12 @@ void loop() {
 
 const long INTERVAL1000MSEC = 1000;
 const long INTERVAL10SEC = 10000;
+const long INTERVAL2SEC = 2000;
 byte incomingByte = 0;
 uint16_t value = 0;
+float average;
+uint8_t i;
+
 
 unsigned long CurrentTime = millis();
 
@@ -141,7 +145,7 @@ unsigned long CurrentTime = millis();
 
 	CurrentTime = millis();
 
-	if ( ( (CurrentTime - ActionTime) >= INTERVAL10SEC) || (Serial.available() != 0) )
+	if ( ( (CurrentTime - ActionTime) >= INTERVAL2SEC) || (Serial.available() != 0) )
 //	if ( (  Serial.available() != 0) )
 
 	{
@@ -161,39 +165,72 @@ unsigned long CurrentTime = millis();
 		}
 
 		Serial.println("");
-		Serial.print(F(" Bus Voltage Register    : "));
-		Serial.print( (ina209_40.readWord( BUS_V_REG ) >>3) *0.004 );
-		Serial.println(F(" V"));
-
-		Serial.print(F("^^^ Bus Voltage Register : "));
-		Serial.print( ina209_40.getVoltage() );
-		Serial.println(F(" V"));
-//		mySerial.print(F("^^^ Bus Voltage Register : "));
-//		mySerial.print( ina209_40.getVoltage() );
-//		mySerial.println(F(" V"));
+		mySerial.println("");
+//		Serial.print(F(" Current Register        : "));
+//		value = ina209_40.readWord (CURRENT_REG );
+//		if ((value & 0x8000) == 0x0000) {
+//			Serial.print( ( value ) * 0.01 / SHUNT_R );
+//		}
+//		else {
+//			Serial.print( "-");
+//			Serial.print( ( (value ^ 0xffff) +1  ) * 0.01 / SHUNT_R  );
+//		}
+//		Serial.println(F(" mA"));
 
 		Serial.print(F(" Current Register        : "));
 		value = ina209_40.readWord (CURRENT_REG );
-		if ((value & 0x8000) == 0x0000) {
-			Serial.print( ( value ) * 0.01 / SHUNT_R );
-//			Serial.print( ( value ) *0.2 );
+		Serial.print( value );
+		Serial.print(F(" 0x"));
+		Serial.println( value, HEX );
+
+
+		average = 0;
+		Serial.print(F("^^^ Current Register     : "));
+		for (i=0; i<100; i++) {
+			average = average + ina209_40.getCurrent( SHUNT_R );
+			delay (1);
+		}
+		average = average / i;
+		Serial.print( average );
+//		Serial.print( ina209_40.getCurrent( SHUNT_R ) );
+		mySerial.print(F("^^^ Current Register     : "));
+		mySerial.print( ina209_40.getCurrent( SHUNT_R ) );
+		if (SHUNT_R >= 1) {
+			Serial.println(F(" uA"));
+			mySerial.println(F(" uA"));
 		}
 		else {
-			Serial.print( "-");
-			Serial.print( ( (value ^ 0xffff) +1  ) * 0.01 / SHUNT_R  );
-		}
-		Serial.println(F(" mA"));
-
-		Serial.print(F("^^^ Current Register     : "));
-		Serial.print( ina209_40.getCurrent( SHUNT_R ) );
-		//mySerial.print(F("^^^ Current Register     : "));
-		//mySerial.print( ina209_40.getCurrent( SHUNT_R ) );
-		if (SHUNT_R == 0.05)
 			Serial.println(F(" mA"));
-//			mySerial.println(F(" mA"));
-		else
-			Serial.println(F(" uA"));
-//			mySerial.println(F(" uA"));
+			mySerial.println(F(" mA"));
+		}
+	
+//		Serial.print(F(" Bus Voltage Register    : "));
+//		Serial.print( (ina209_40.readWord( BUS_V_REG ) >>3) *0.004 );
+//		Serial.println(F(" V"));
+
+		Serial.print(F("^^^ Bus Voltage Register : "));
+		Serial.print( ina209_40.getVoltage() );
+		Serial.println(F(" mV"));
+		mySerial.print(F("^^^ Bus Voltage Register : "));
+		mySerial.print( ina209_40.getVoltage() );
+		mySerial.println(F(" mV"));
+
+//		Serial.print(F(" Power Register          : "));
+//		Serial.print(ina209_40.readWord( POWER_REG ) * 0.0002 / SHUNT_R );
+//		Serial.println(F(" W"));
+	
+		Serial.print(F("^^^ Power Register       : "));
+		Serial.print(ina209_40.getPower( SHUNT_R ) );
+		mySerial.print(F("^^^ Power Register       : "));
+		mySerial.print(ina209_40.getPower( SHUNT_R ) );
+		if (SHUNT_R >= 1) {
+			Serial.println(F(" mW"));
+			mySerial.println(F(" mW"));
+		}
+		else {
+			Serial.println(F(" W"));
+			mySerial.println(F(" W"));
+		}
 	
 		Serial.print(F(" Shunt Voltage Register  : "));
 		value = ina209_40.readWord (SHUNT_V_REG );
@@ -206,21 +243,6 @@ unsigned long CurrentTime = millis();
 		}
 		Serial.println(F(" mV"));
 				
-		Serial.print(F(" Power Register          : "));
-		Serial.print(ina209_40.readWord( POWER_REG ) * 0.0002 / SHUNT_R );
-		Serial.println(F(" W"));
-	
-		Serial.print(F("^^^ Power Register       : "));
-		Serial.print(ina209_40.getPower( SHUNT_R ) );
-//		mySerial.print(F("^^^ Power Register       : "));
-//		mySerial.print(ina209_40.getPower( SHUNT_R ) );
-		if (SHUNT_R == 0.05)
-			Serial.println(F(" W"));
-//			mySerial.println(F(" W"));
-		else
-			Serial.println(F(" mW"));
-//			mySerial.println(F(" mW"));
-	
 		Serial.print(F(" Shunt Voltage Max Value : "));
 		Serial.print( (ina209_40.readWord (SHUNT_V_POSPEAK_REG ) ) *0.01 );
 		Serial.println(F(" mV"));
@@ -245,15 +267,15 @@ unsigned long CurrentTime = millis();
 		Serial.print(ina209_40.readWord( BUS_V_MIN_REG ) >>1 );
 		Serial.println(F(" mV"));
 
-		Serial.print(F(" Power Max Value         : "));
-		Serial.print(ina209_40.readWord( POWER_PEAK_REG ) *20 *SHUNT_R );
-		Serial.println(F(" mW"));
-		Serial.println("");
+//		Serial.print(F(" Power Max Value         : "));
+//		Serial.print(ina209_40.readWord( POWER_PEAK_REG ) *20 *SHUNT_R );
+//		Serial.println(F(" mW"));
+//		Serial.println("");
 		
 	}
 	else {
 		
-		// Warn register functions
+/*		// Warn register functions
 		smbus_alert = ina209_40.readWord ( STATUS_REG ) & smbus_mask;
 		
 		if (smbus_alert != last_smbus_alert ) {
@@ -305,9 +327,10 @@ unsigned long CurrentTime = millis();
 		}
 		
 		delay (10);
-		
+*/
 	}
-	
+
+/*	
 	// All pins are active low.
 	// Warn pin
 	if (digitalRead (WARN_PIN) && (warn_pin_status == 0)) {
@@ -378,7 +401,7 @@ unsigned long CurrentTime = millis();
 	else
 		gpio_pin_status = gpio_pin_status;
 
-
+*/
 
 
 }
