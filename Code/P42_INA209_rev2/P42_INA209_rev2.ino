@@ -5,19 +5,22 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Oct/06
+// Last change: 2019/Oct/23
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
 // https://github.com/wolfgangfriedrich/P42-Watt-A-Live
 
+//#define SoftSer
 
 #include <Wire.h>		// I2C library 
 //#include <Serial.h>		// UART library 
 #include "TI_INA209.h"
-#include <SoftwareSerial.h>
+#ifdef SoftSer
+ #include <SoftwareSerial.h>
 
-SoftwareSerial mySerial(4, 5); // RX, TX
+ SoftwareSerial mySerial(4, 5); // RX, TX
+#endif
 
 TI_INA209 ina209_40( 0x40, SHUNT_R );		// instantiate ina209_40 of class INA209 with I2C address 0x40. Address depends on set resistors.
 										// Set shunt resistor value.
@@ -47,9 +50,12 @@ word testword = 0;
 	
 	Wire.begin();
 	Serial.begin(115200);
+
 	
+#ifdef SoftSer
 	mySerial.begin(38400);
 	mySerial.println("Hello, world?");
+#endif
 	
 	delay(5000);
 	
@@ -88,9 +94,11 @@ word testword = 0;
 	Serial.println(F(" TI INA209 Demo\r\n"));
 	Serial.print(F(" Shunt value [Ohm] : "));
 	Serial.println(SHUNT_R );
+#ifdef SoftSer
 	mySerial.println(F(" TI INA209 Demo\r\n"));
 	mySerial.print(F(" Shunt value [Ohm] : "));
 	mySerial.println(SHUNT_R );
+#endif
 	
 	Serial.print(F(" Shunt value [Ohm] : "));
 	Serial.println(SHUNT_R );
@@ -165,7 +173,9 @@ unsigned long CurrentTime = millis();
 		}
 
 		Serial.println("");
+#ifdef SoftSer
 		mySerial.println("");
+#endif
 //		Serial.print(F(" Current Register        : "));
 //		value = ina209_40.readWord (CURRENT_REG );
 //		if ((value & 0x8000) == 0x0000) {
@@ -193,15 +203,21 @@ unsigned long CurrentTime = millis();
 		average = average / i;
 		Serial.print( average );
 //		Serial.print( ina209_40.getCurrent( SHUNT_R ) );
+#ifdef SoftSer
 		mySerial.print(F("^^^ Current Register     : "));
 		mySerial.print( ina209_40.getCurrent( SHUNT_R ) );
+#endif
 		if (SHUNT_R >= 1) {
 			Serial.println(F(" uA"));
+#ifdef SoftSer
 			mySerial.println(F(" uA"));
+#endif
 		}
 		else {
 			Serial.println(F(" mA"));
+#ifdef SoftSer
 			mySerial.println(F(" mA"));
+#endif
 		}
 	
 //		Serial.print(F(" Bus Voltage Register    : "));
@@ -211,9 +227,11 @@ unsigned long CurrentTime = millis();
 		Serial.print(F("^^^ Bus Voltage Register : "));
 		Serial.print( ina209_40.getVoltage() );
 		Serial.println(F(" mV"));
+#ifdef SoftSer
 		mySerial.print(F("^^^ Bus Voltage Register : "));
 		mySerial.print( ina209_40.getVoltage() );
 		mySerial.println(F(" mV"));
+#endif
 
 //		Serial.print(F(" Power Register          : "));
 //		Serial.print(ina209_40.readWord( POWER_REG ) * 0.0002 / SHUNT_R );
@@ -221,15 +239,21 @@ unsigned long CurrentTime = millis();
 	
 		Serial.print(F("^^^ Power Register       : "));
 		Serial.print(ina209_40.getPower( SHUNT_R ) );
+#ifdef SoftSer
 		mySerial.print(F("^^^ Power Register       : "));
 		mySerial.print(ina209_40.getPower( SHUNT_R ) );
+#endif
 		if (SHUNT_R >= 1) {
 			Serial.println(F(" mW"));
+#ifdef SoftSer
 			mySerial.println(F(" mW"));
+#endif
 		}
 		else {
 			Serial.println(F(" W"));
+#ifdef SoftSer
 			mySerial.println(F(" W"));
+#endif
 		}
 	
 		Serial.print(F(" Shunt Voltage Register  : "));
