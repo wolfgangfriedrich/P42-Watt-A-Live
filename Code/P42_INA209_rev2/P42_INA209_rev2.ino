@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Oct/23
+// Last change: 2019/Nov/15
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing

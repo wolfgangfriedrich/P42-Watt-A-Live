@@ -5,7 +5,7 @@
 
 // Pier 42 Watt-A-Live Shield/Wing
 
-// Last change: 2019/Oct/22
+// Last change: 2019/Nov/15
 
 // https://www.tindie.com/stores/pier42/
 // https://hackaday.io/project/166326-watt-a-live-power-monitor-shield-wing
@@ -23,10 +23,10 @@
  
 // SHUNT for Rev 1.0 board
 //#define SHUNT_R		0.10 
-//#define SHUNT_R		5.05
+//#define SHUNT_R		5.1
 // SHUNT for Rev 2.x board
-//#define SHUNT_R		0.05 
-#define SHUNT_R		1.05 
+#define SHUNT_R		0.05 
+//#define SHUNT_R		5.49 
 
 #define CALIB_VALUE		4096		// from calculation in datasheet
 
